@@ -1,0 +1,12 @@
+name: Dispatch Listener
+
+on:
+  repository_dispatch:
+    types: [test-trigger]
+
+jobs:
+  run-on-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print event info
+        run: echo "Received repository dispatch event from repo-aep!"
