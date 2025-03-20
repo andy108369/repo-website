@@ -1,11 +1,13 @@
-name: Dispatch Listener
+name: Deploy site
 
 on:
-  repository_dispatch:
-    types: [test-trigger]
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
 
 jobs:
-  run-on-dispatch:
+  deploy-site:
     runs-on: ubuntu-latest
     steps:
       - name: Print event info
