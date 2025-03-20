@@ -8,7 +8,7 @@ on:
 # Sets permissions of the GITHUB_TOKEN
 permissions:
   contents: write      # Required to push commits and create branches
-  pull-requests: write # Required to create and merge PRs
+  pull-requests: write # Required to create and label PRs
 
 # Make sure to:
 # GH Repo Settings -> Actions -> General -> Workflow permissions -> [x] Allow GitHub Actions to create and approve pull requests
