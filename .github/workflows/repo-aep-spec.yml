@@ -5,6 +5,11 @@ on:
   repository_dispatch:
     types: [test-trigger]
 
+# Sets permissions of the GITHUB_TOKEN
+permissions:
+  contents: write      # Required to push commits and create branches
+  pull-requests: write # Required to create and merge PRs
+
 jobs:
   run-on-dispatch:
     runs-on: ubuntu-latest
@@ -75,6 +80,7 @@ jobs:
         if: steps.update-specs.outputs.has_changes == 'true' && steps.check-pr.outputs.pr_exists != '0'
         run: |
           # Configure git
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
 
@@ -104,6 +110,11 @@ jobs:
       - name: Create &/ Merge PR if Needed
         if: steps.update-specs.outputs.has_changes == 'true'
         run: |
+          # Configure git
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+
           if [[ "${{ steps.check-pr.outputs.pr_exists }}" -gt "0" ]]; then
             echo "Merging existing PR #${{ steps.check-pr.outputs.pr_number }}..."
             gh pr merge --auto --squash --delete-branch ${{ steps.check-pr.outputs.pr_number }}
