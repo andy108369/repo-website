@@ -1,5 +1,1 @@
-<<<<<<< Updated upstream
-test 2
-=======
-test 3
->>>>>>> Stashed changes
+test 123 DELETEME

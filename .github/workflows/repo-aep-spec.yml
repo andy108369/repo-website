@@ -151,5 +151,9 @@ jobs:
             echo "Merging newly created PR #$PR_NUMBER..."
             # If sporadically fails with "GraphQL: Pull request Protected branch rules not configured for this branch (enablePullRequestAutoMerge)", then use: gh pr merge --admin --merge --delete-branch $PR_NUMBER
             # Ref. https://github.com/orgs/community/discussions/129063#discussioncomment-10689765
+
+            # Testing: it looks like it needs to login (or maybe a simple delay) before it can merge freshly created PR
+            # otherwise it fails with "GraphQL: Pull request Auto merge is not allowed for this repository (enablePullRequestAutoMerge)" error, despite it would work the second time this workflow runs
+            gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
             gh pr merge --auto --squash --delete-branch $PR_NUMBER
           fi
