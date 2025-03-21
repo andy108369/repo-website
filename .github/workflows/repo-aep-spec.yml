@@ -171,9 +171,14 @@ jobs:
           fi
           echo "merge_complete=true" >> $GITHUB_OUTPUT
 
-      # to trigger the Astro Build workflow (for repo that use Classic Branch protection)
+  # to trigger the Astro Build workflow (for repo that use Classic Branch protection)
+  trigger-astro:
+    name: Trigger Astro Build
+    needs: update-specs
+    if: needs.update-specs.outputs.merge_complete == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: Trigger Astro Build
-        if: steps.create-merge-pr.outputs.merge_complete == 'true'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
