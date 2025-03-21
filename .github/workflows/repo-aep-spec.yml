@@ -23,6 +23,8 @@ jobs:
 
   update-specs:
     runs-on: ubuntu-latest
+    outputs:
+      merge_complete: ${{ steps.create-merge-pr.outputs.merge_complete }}
     steps:
       - uses: actions/checkout@v4
         with:
