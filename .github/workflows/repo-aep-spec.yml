@@ -166,6 +166,5 @@ jobs:
               sleep 3
             done
 
-            gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
             gh pr merge --auto --squash --delete-branch $PR_NUMBER
           fi
