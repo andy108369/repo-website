@@ -6,6 +6,9 @@ on:
 
   workflow_dispatch:
 
+  repository_dispatch:
+    types: [aep-spec-update]
+
 jobs:
   deploy-site:
     runs-on: ubuntu-latest
