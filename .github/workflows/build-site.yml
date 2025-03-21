@@ -18,4 +18,4 @@ jobs:
 
       - name: Verify specs include latest updates
         run: |
-          find spec/ -type f | xargs -I@ sh -c "set -x; grep -n ^ '@'; set +x" || true
+          find src/content/aeps/ -type f | xargs -I@ sh -c "set -x; grep -n ^ '@'; set +x" || true
