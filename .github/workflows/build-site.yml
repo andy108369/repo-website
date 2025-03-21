@@ -10,5 +10,12 @@ jobs:
   deploy-site:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Print event info
         run: echo "Received repository dispatch event from repo-aep!"
+
+      - name: Verify specs include latest updates
+        run: |
+          find spec/ -type f | xargs -I@ sh -c "set -x; grep -n ^ '@'; set +x" || true
