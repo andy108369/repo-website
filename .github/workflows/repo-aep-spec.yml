@@ -112,6 +112,7 @@ jobs:
           echo "Updated existing PR #${{ steps.check-pr.outputs.pr_number }}"
 
       - name: Create &/ Merge PR if Needed
+        id: create-merge-pr
         if: steps.update-specs.outputs.has_changes == 'true'
         run: |
           # Configure git
@@ -152,10 +153,11 @@ jobs:
             # If sporadically fails with "GraphQL: Pull request Protected branch rules not configured for this branch (enablePullRequestAutoMerge)", then use: gh pr merge --admin --merge --delete-branch $PR_NUMBER
             # Ref. https://github.com/orgs/community/discussions/129063#discussioncomment-10689765
 
-            # Testing: it looks like it needs to login (or maybe a simple delay) before it can merge freshly created PR
-            # otherwise it fails with "GraphQL: Pull request Auto merge is not allowed for this repository (enablePullRequestAutoMerge)" error, despite it would work the second time this workflow runs
-            # Testing 2: fails with "GraphQL: Pull request Pull request is in clean status (enablePullRequestAutoMerge)", trying to see if waiting for freshly made PR to become mergable will fix this.
-            # Wait until PR is mergeable
+            # Make sure freshy created PR is MERGEABLE before proceeding!
+            # Otherwise it will fail with either:
+            # - "GraphQL: Pull request Auto merge is not allowed for this repository (enablePullRequestAutoMerge)"
+            # - "GraphQL: Pull request Pull request is in clean status (enablePullRequestAutoMerge)"
+            echo "Waiting until PR is mergeable ..."
             for i in {1..10}; do
               MERGEABLE=$(gh pr view "$PR_URL" --json mergeable --jq '.mergeable')
               echo "Mergeable status: $MERGEABLE"
@@ -165,13 +167,13 @@ jobs:
               echo "Waiting for PR to become mergeable..."
               sleep 3
             done
-
             gh pr merge --auto --squash --delete-branch $PR_NUMBER
           fi
+          echo "merge_complete=true" >> $GITHUB_OUTPUT
 
       # to trigger the Astro Build workflow (for repo that use Classic Branch protection)
       - name: Trigger Astro Build
-        if: success()
+        if: steps.create-merge-pr.outputs.merge_complete == 'true'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
