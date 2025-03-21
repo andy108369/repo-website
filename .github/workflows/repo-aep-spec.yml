@@ -124,7 +124,7 @@ jobs:
 
           if [[ "${{ steps.check-pr.outputs.pr_exists }}" -gt "0" ]]; then
             echo "Merging existing PR #${{ steps.check-pr.outputs.pr_number }}..."
-            # If sporadically fails with "GraphQL: Pull request Protected branch rules not configured for this branch (enablePullRequestAutoMerge)", then use: gh pr merge --admin --merge --delete-branch ${{ steps.check-pr.outputs.pr_number }}
+            # If fails with "GraphQL: Pull request Protected branch rules not configured for this branch (enablePullRequestAutoMerge)", then either create Classic Branch protection rule OR use: gh pr merge --admin --merge --delete-branch ${{ steps.check-pr.outputs.pr_number }}
             # Ref. https://github.com/orgs/community/discussions/129063#discussioncomment-10689765
             gh pr merge --auto --squash --delete-branch ${{ steps.check-pr.outputs.pr_number }}
           else
@@ -152,7 +152,7 @@ jobs:
             PR_NUMBER=$(echo $PR_URL | grep -oE '[0-9]+$')
 
             echo "Merging newly created PR #$PR_NUMBER..."
-            # If sporadically fails with "GraphQL: Pull request Protected branch rules not configured for this branch (enablePullRequestAutoMerge)", then use: gh pr merge --admin --merge --delete-branch $PR_NUMBER
+            # If fails with "GraphQL: Pull request Protected branch rules not configured for this branch (enablePullRequestAutoMerge)", then either create Classic Branch protection rule OR use: gh pr merge --admin --merge --delete-branch $PR_NUMBER
             # Ref. https://github.com/orgs/community/discussions/129063#discussioncomment-10689765
 
             # Make sure freshy created PR is MERGEABLE before proceeding!
@@ -180,7 +180,7 @@ jobs:
     if: needs.update-specs.outputs.merge_complete == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Astro Build
+      - name: Dispatch event to trigger Astro build
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
