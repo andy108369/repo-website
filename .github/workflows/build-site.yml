@@ -13,11 +13,8 @@ jobs:
   deploy-site:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout latest main
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
 
       - name: Print event info
         run: echo "Received repository dispatch event from repo-aep!"
